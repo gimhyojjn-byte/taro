@@ -1,46 +1,46 @@
 # 오늘의 타로 디자인 가이드
 
-하얀 전시 공간과 여백, 절제된 타이포그래피를 바탕으로 타로 카드 한 장에 시선을 모은다. 한국어 서비스명은 **오늘의 타로**로 통일한다. 아이보리 배경과 짙은 자두색 버튼, 먹색에 가까운 보라 카드 뒷면, 카드에만 쓰는 옅은 황동색으로 서비스의 분위기를 만든다.
+명지대학교 타로 디자인 팩을 기준으로, 연회색 화면 위에 흰 패널과 선명한 초록 행동 버튼을 사용한다. 375px 화면에서 카드 그림, 현재 질문, 다음 행동이 먼저 보이도록 배치한다.
 
-기획 기준은 [PRD](TARO_01_PRD.md), [기능명세서](TARO_02_기능명세서.md), [유저플로우](TARO_03_유저플로우.md), [와이어프레임](TARO_04_와이어프레임.md)이다.
+기획 기준은 [PRD](TARO_01_PRD.md), [기능명세서](TARO_02_기능명세서.md), [유저플로우](TARO_03_유저플로우.md), [와이어프레임](TARO_04_와이어프레임.md)이다. 카드 선택 단계는 이번에 확정한 스와이프 흐름을 따른다.
 
-## 색상과 Tailwind CSS v4 토큰
+## 색상 · Tailwind CSS v4 토큰
 
-| 역할 | Tailwind 유틸리티 | 값 | 사용 위치 |
-|---|---|---|---|
-| 배경 · 기본 글씨 | `bg-background text-foreground` | `#FCFAF7` · `#241D2D` | 페이지와 본문 |
-| 카드 · 카드 글씨 | `bg-card text-card-foreground` | `#FFFFFF` · `#241D2D` | 결과 카드와 대화상자 |
-| 보조 영역 · 보조 글씨 | `bg-muted text-muted-foreground` | `#F2EDF4` · `#62586B` | 개인정보 안내와 보조 설명 |
-| 핵심 행동 · 버튼 글씨 | `bg-primary text-primary-foreground` | `#563575` · `#FFFFFF` | 시작, 뽑기, 저장 |
-| 강조 · 강조 글씨 | `bg-accent text-accent-foreground` | `#EEE3F6` · `#46265F` | 선택된 주제, 보조 버튼 호버 |
-| 구분선 · 입력 테두리 | `border-border` · `border-input` | `#E6DFE9` · `#897994` | 섹션 구분선과 입력 경계 |
-| 포커스 · 오류 | `ring-ring` · `text-destructive` | `#7549A1` · `#A3253C` | 키보드 포커스와 날짜 오류 |
-| 카드 뒷면 · 장식 | `bg-tarot-back` · `text-tarot-gold` | `#30213E` · `#E2C68B` | 뒷면의 달, 별, 테두리 |
+| 토큰 | 값 | 용도 |
+|---|---|---|
+| background | `#F3F3F5` | 화면 배경 |
+| card | `#FFFFFF` | 패널·입력·보조 버튼 |
+| muted | `#F6F6F8` | 보조 안내 표면 |
+| foreground | `#000000` | 제목과 본문, 초록 버튼의 글씨 |
+| muted-foreground | `#4D4D4E` | 보조 문구 |
+| placeholder | `#979F9B` | 흐린 장식과 비활성 표시. 필수 정보는 별도 라벨로 제공 |
+| border | `#DCDCDD` | 패널 구분과 보조 버튼 테두리 |
+| primary | `#00D959` | 주요 버튼, 선택 표시, 카드명 주변 강조 |
+| accent | `#E6FAEF` | 선택된 칩과 개인정보 안내 |
+| disabled | `#D7D7D7` | 비활성 버튼 |
+| destructive | `#E5484D` | 오류 테두리와 아이콘. 설명 글씨는 본문색 |
+| inverse | `#232427` | 저장·복사 토스트 배경 |
+| swipe | `#00DE00` | 스와이프 방향 표시 |
 
-전역 CSS 예시에서 shadcn의 의미 기반 변수와 Tailwind 유틸리티를 연결한다. 현재 디자인은 라이트 테마로 정의한다.
+기본 shadcn 변수는 `:root`에 두고 Tailwind CSS v4의 `@theme inline`에서 `--color-*`에 연결한다. 카드명과 스와이프 안내에서 밝은 초록은 장식에 사용하고 실제 글씨는 검정으로 표시한다. 밝은 초록과 검정 조합의 명도 대비는 약 11:1이다. 입력 경계는 흰 배경에서 3:1 이상이 필요한 경우 `#4D4D4E`를 사용한다.
 
 ```css
 @import "tailwindcss";
 
 :root {
-  --background: #fcfaf7;
-  --foreground: #241d2d;
+  --background: #f3f3f5;
+  --foreground: #000;
   --card: #fff;
-  --card-foreground: var(--foreground);
-  --popover: var(--card);
-  --popover-foreground: var(--foreground);
-  --primary: #563575;
-  --primary-foreground: #fff;
-  --secondary: #f2edf4;
-  --secondary-foreground: var(--foreground);
-  --muted: #f2edf4;
-  --muted-foreground: #62586b;
-  --accent: #eee3f6;
-  --accent-foreground: #46265f;
-  --border: #e6dfe9;
-  --input: #897994;
-  --ring: #7549a1;
-  --destructive: #a3253c;
+  --muted: #f6f6f8;
+  --muted-foreground: #4d4d4e;
+  --border: #dcdcdd;
+  --input: #4d4d4e;
+  --primary: #00d959;
+  --primary-foreground: #000;
+  --accent: #e6faef;
+  --accent-foreground: #000;
+  --ring: #232427;
+  --destructive: #e5484d;
   --radius: 1rem;
 }
 
@@ -48,77 +48,71 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --color-ring: var(--ring);
   --color-destructive: var(--destructive);
-  --radius-md: calc(var(--radius) - 4px);
-  --radius-lg: var(--radius);
 }
 
 @theme {
-  --color-tarot-back: #30213e;
-  --color-tarot-gold: #e2c68b;
   --font-sans: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
-  --font-display: "Noto Serif KR", "Batang", serif;
-  --radius-tarot: 1.5rem;
-  --text-hero: 2.25rem;
-  --text-hero--line-height: 1.2;
-  --text-reading: 1.0625rem;
-  --text-reading--line-height: 1.6;
+  --tracking-tarot: -0.02em;
+  --color-disabled: #d7d7d7;
+  --color-inverse: #232427;
+  --color-swipe: #00de00;
 }
 ```
 
 ## 글씨 · 간격 · 레이아웃
 
+전체 글꼴은 Noto Sans KR, 자간은 −2%다.
+
 | 역할 | 크기 / 줄 높이 | 굵기 |
 |---|---|---|
-| 시작 화면 제목 | 36px / 1.2, 넓은 화면 48px | 700, 명조 |
-| 입력 화면 제목 | 28px / 1.3 | 700, 고딕 |
-| 결과 카드 이름 | 24px / 1.3 | 700, 명조 |
-| 맞춤 해석 | 17px / 1.6 | 400, 고딕 |
-| 입력 · 버튼 · 본문 | 16px / 1.5 | 400, 버튼 600 |
-| 라벨 · 안내 · 상태 | 14px / 1.5 | 400, 라벨 600 |
+| 시작 제목 | 28 / 38px | Bold |
+| 화면 질문 | 22 / 32px | Bold |
+| 카드 이름 · 앱바 | 18 / 26px | Bold |
+| 맞춤 해석 | 16 / 26px | Regular |
+| L 버튼 | 16 / 24px | Bold |
+| M 버튼 · 칩 · 토스트 | 15 / 22px | Medium |
+| 안내 · 보조 | 13 / 19px | Regular |
+| 입력 라벨 | 13 / 19px | Bold |
 
-- 간격은 4px 단위를 쓴다. 아이콘과 글씨는 8px, 라벨과 입력은 8px, 필드 사이는 16px, 영역 사이는 24~32px로 둔다. 스택은 `flex flex-col gap-*`로 구성한다.
-- 화면 폭 320px부터 가로 스크롤 없이 사용할 수 있게 한다. 좌우 여백은 모바일 16px, 넓은 화면 24px로 두고, 입력과 결과는 최대 480px에서 가운데 정렬한다.
-- 카드와 전체 패널은 24px, 입력과 주제 선택은 12px, 버튼은 알약형으로 둔다. 카드 패딩은 24px, 좁은 화면은 16px로 조정한다. 얇은 경계선으로 표면을 구분한다.
-- 버튼과 주제 선택의 터치 영역은 최소 44×44px, 주 행동 높이는 48px로 둔다. 결과 버튼은 2열로 시작하고, 글자 확대 시 한 열로 흐르게 한다.
+- 375px 화면의 좌우 여백은 20px, 콘텐츠 폭은 335px다. 320px부터 가로 스크롤 없이 배치한다.
+- 버튼 L은 335×56px, 모서리 16px다. M은 162×48px, 모서리 14px다. 2열 행동 영역은 11px 간격을 사용하고 200% 확대에서 한 열로 흐르게 한다.
+- 기본 간격은 4px 단위다. 필드 안쪽 라벨 간격 8px, 필드 사이 16px, 주요 영역 간격 20~24px를 사용한다. 버튼 아이콘이 있으면 20px와 라벨 간격 6px를 사용한다.
 
 ## shadcn/ui 컴포넌트
 
 | 컴포넌트 | 구성과 상태 |
 |---|---|
-| `Button` | `default`는 [타로 시작], [카드 한 장 뽑기], [이미지 저장]. `outline`은 [결과 공유], [다시 뽑기]. `ghost`는 [처음으로], 뒤로가기. 색과 크기는 공통 variant에서 관리한다. 호버는 색을 짙게, 누름은 즉시 피드백, 포커스는 2px 링과 2px 간격으로 표시한다. 비활성은 `disabled`와 보조 영역 색으로 표시한다. 처리 중은 `Spinner`와 행동 문구를 함께 표시한다. |
-| `FieldGroup`, `Field`, `Input` | 이름·생년월일·전공에 항상 보이는 `FieldLabel`을 연결한다. 이름은 최대 10자, 닉네임 가능, 전공은 선택이다. 날짜는 실제 날짜를 검증하고 오류 시 `Field`의 `data-invalid`, 입력의 `aria-invalid`, `FieldError`와 `aria-describedby`를 연결한다. |
-| `ToggleGroup`, `ToggleGroupItem` | 단일 선택으로 커리어·재물·연애·건강·학업·종합을 3열 2행에 배치한다. 좁은 화면이나 글자 확대 시 2열로 줄인다. 선택 상태는 강조 배경, 테두리, 체크 표시를 함께 사용한다. |
-| `Card` | `CardHeader`는 이름·주제, `CardContent`는 그림·카드 이름·별자리·해석, `CardFooter`는 오락용 안내를 담는다. 행동 버튼과 개인정보 안내는 카드 바깥에 둔다. |
-| `Alert`, `Dialog` | 개인정보 문구는 보조 표면의 `Alert`로 표시한다. 다운로드·복사 대안은 제목이 있는 `Dialog`에 이미지 또는 선택 가능한 메시지로 표시한다. 닫으면 실행한 버튼으로 포커스를 돌린다. 성공 메시지는 `role="status"`로 알린다. |
+| Button | Primary는 초록 배경·검정 글씨, 화면당 하나다. 시작과 뽑기는 L, 결과 화면에서는 [결과 공유]만 M Primary다. 이미지 저장·다시 뽑기·처음으로는 흰 배경의 M Secondary다. 필수값이 없거나 날짜가 잘못되면 뽑기 버튼을 비활성화한다. 처리 중은 Spinner와 행동 문구로 표시한다. |
+| FieldGroup · Field · Input | 이름·생년월일은 필수, 전공은 선택이다. 이름은 닉네임을 권장하고 최대 10자다. 날짜는 실제 날짜로 검증한다. 오류는 `data-invalid`·`aria-invalid`와 “날짜를 다시 확인해 주세요”를 연결한다. |
+| ToggleGroup | 커리어·재물·연애·건강·학업·종합을 단일 선택하는 3열 2행 칩으로 구성한다. 선택된 칩은 밝은 초록 배경과 체크로 구분하며 터치 영역은 최소 44px다. |
+| Card | 결과 카드의 Header는 이름·주제, Content는 그림·카드명·별자리·해석, Footer는 오락용 안내와 서비스명이다. 저장·공유 행동과 개인정보 안내는 결과 카드 바깥에 둔다. |
+| Alert · Dialog · Toast | 개인정보 안내는 입력칸 바로 아래와 결과에 표시한다. 파일·텍스트 대안은 제목이 있는 Dialog에 보여 준다. 저장·복사 성공 토스트는 화면 하단의 어두운 표면에 2초 동안 표시하며 보조기기에도 상태를 알린다. |
 
-여백과 배치만 화면의 `className`에서 조정한다. 아이콘이 들어간 버튼은 아이콘에 `data-icon`을 지정하고 크기는 컴포넌트가 관리한다. 아이콘만 보이는 뒤로가기 버튼에는 접근 가능한 이름을 지정한다.
-
-## 화면과 전환
+## 375px 화면 · 카드 선택
 
 | 화면 | 화면 구성 및 동작 |
 |---|---|
-| **S-01 시작 · F-1** | 제목, 카드 뒷면, 한 장으로 맞춤 해석을 받아 본다는 설명, [타로 시작], 오락용·개인정보 안내 순서다. 뒷면의 기준 비율은 2:3이며 시작 화면에서 약 160~200px 너비로 표시한다. |
-| **S-02 내 정보 · 주제 · F-2·F-3** | 뒤로가기와 제목 아래 필드를 표시한다. 이름·유효한 생년월일·주제가 모두 채워지면 [카드 한 장 뽑기]를 활성화한다. 주제 선택과 뽑기 버튼 사이에 개인정보 안내를 표시한다. 잘못된 날짜에는 “날짜를 다시 확인해 주세요”를 표시한다. |
-| **S-03 맞춤 해석 · F-4~F-7** | 카드 한 장과 이름·주제·별자리, 맞춤 해석을 우선 표시한다. 기본 문장, 별자리 문장, 분류된 전공 문장 순으로 최대 3문장·90자다. 좁은 화면과 확대 상태에서는 문장 줄바꿈을 허용한다. 결과 아래에 이름이 이미지와 공유 글에 들어간다는 안내, 저장·공유 버튼, 다시 뽑기·처음으로 버튼을 둔다. |
+| S-01 시작 | 서비스명, 카드 그림, 서비스 설명, [타로 시작], 오락용·개인정보 안내 순서다. |
+| S-02 내 정보·주제 | 이름·생년월일·전공, 개인정보 안내, 주제 칩 6개, 뽑기 버튼을 배치한다. 빈 상태와 입력 완료 상태를 구분한다. |
+| S-03-P 카드 선택 | 카드 뒷면 22장을 반지름 430px, 8° 간격으로 부채꼴 배치한다. 좌우 스와이프 또는 버튼·키보드로 인접 카드를 탐색하고 탭으로 한 장을 고른다. |
+| S-03-P2 선택 완료 | 고른 카드를 가운데로 가져온다. 애니메이션은 0.5초를 기준으로 하며 중복 선택을 방지한다. |
+| S-03-D 카드 공개 | 약 0.6초 동안 카드를 뒤집는다. 메이저 아르카나 22장 중 무작위 한 장을 정방향으로 공개하며, 공개 후 약 0.4초 뒤 결과를 표시한다. |
+| S-03 맞춤 결과 | 카드 × 주제 기본 문장, 별자리 문장, 분류된 전공 문장 순으로 최대 3문장·90자를 가운데 정렬한다. 전공이 없거나 분류되지 않으면 마지막 문장을 생략한다. |
+| S-03-S · S-03-C | 이미지 저장 대안과 공유 자동 복사 상태다. 내보내기나 공유를 취소해도 결과 화면을 유지한다. |
 
-- 22장의 메이저 아르카나 중 정방향 한 장을 공개한다. 카드 뒤집기는 약 600ms로 설정하고 1초를 넘기지 않는다. 애니메이션 중 중복 뽑기를 방지하고 `prefers-reduced-motion: reduce`에서는 결과를 즉시 표시한다. 화면 전환 후에는 새 화면 제목에 포커스를 옮긴다.
-- [다시 뽑기]는 입력값을 유지한 채 주제 선택으로 돌아가고, [처음으로]는 입력과 결과를 비우고 시작 화면으로 돌아간다.
-- 카드에는 직접 제작하거나 사용 허가가 확인된 그림을 쓴다. 앞면 그림의 크롭, 프레임, 비율은 22장에 일관되게 적용한다. 카드 이름이 그림 바로 옆에 있을 때는 중복 낭독을 피하도록 그림의 대체 텍스트를 비워 둔다.
+- 스와이프가 끝나면 8° 단위로 정렬한다. 애니메이션은 변형과 투명도를 사용한다. 움직임 감소 설정에서는 카드 이동과 뒤집기를 생략하고 최종 상태를 표시한다.
+- 뒷면은 초록 선·별 패턴을 사용한다. 앞면은 디자인 팩에 포함된 Rider–Waite–Smith 메이저 아르카나 그림을 사용한다. 디자인 팩은 1909년 원화와 Figma Community **78 Tarot Cards**를 출처로 표기한다.
+- [다시 뽑기]는 입력값을 유지한 채 S-02 주제 선택으로 돌아간다. [처음으로]는 입력과 결과를 비우고 S-01로 돌아간다.
 
 ## 개인정보 · 저장 · 공유
 
